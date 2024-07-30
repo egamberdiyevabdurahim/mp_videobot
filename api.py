@@ -5,6 +5,9 @@ import json
 BASE_URL = 'https://mpvideo.pythonanywhere.com/'
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# POSTS
+
 def find_post(code):
     url = f"{BASE_URL}/post/"
     response = requests.get(url=url).text
@@ -65,6 +68,9 @@ def create_simple_user(telegram_id, first_name=None, last_name=None, password=No
         })
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# USER
+
 def check_user(telegram_id):
     url = f"{BASE_URL}/user/"
     url2 = f"{BASE_URL}/account/"
@@ -122,6 +128,64 @@ def sign_in(telegram_id, password, username):
             requests.patch(url=f"{BASE_URL}/user/{str(d['id'])}/", data={'used': int(use) + 1})
 
 
+def id_detector(telegram_id):
+    url2 = f"{BASE_URL}/account/"
+    response2 = requests.get(url=url2).text
+    dat2 = json.loads(response2)
+    for x in dat2:
+        if x['telegram_id'] == telegram_id:
+            return x['user']
+
+
+def used_adder(telegram_id):
+    url = f"{BASE_URL}/user/"
+    url2 = f"{BASE_URL}/account/"
+    response = requests.get(url=url).text
+    response2 = requests.get(url=url2).text
+    dat = json.loads(response)
+    dat2 = json.loads(response2)
+    for x in dat2:
+        if x['telegram_id'] == telegram_id:
+            for i in dat:
+                if i['id'] == x['user']:
+                    use = i['used']
+                    requests.patch(url=f"{BASE_URL}/user/{str(x['id'])}/", data={'used': int(use) + 1})
+
+
+def full_id():
+    url = f"{BASE_URL}/account/"
+    response = requests.get(url=url).text
+    dat = json.loads(response)
+    print(dat)
+    lis = [li['telegram_id'] for li in dat]
+    return lis
+
+
+def about(text):
+    url = f"{BASE_URL}/user/"
+    url2 = f"{BASE_URL}/account/"
+    response = requests.get(url=url).text
+    response2 = requests.get(url=url2).text
+    dat = json.loads(response)
+    dat2 = json.loads(response2)
+    for x in dat2:
+        if x['telegram_id'] == text:
+            for i in dat:
+                if i['id'] == x['user']:
+                    use = i['used']
+                    requests.patch(url=f"{BASE_URL}/user/{str(x['id'])}/", data={'used': int(use) + 1})
+                    data = {
+                        'first_name': i['first_name'],
+                        'last_name': i['last_name'],
+                        'username': i['username'],
+                        'password': ''.join(['*' for x in range(len(i['password']))]),
+                    }
+                    return data
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# HISTORY
+
 def history(text, telegram_id):
     url = f"{BASE_URL}/user/"
     url2 = f"{BASE_URL}/account/"
@@ -152,27 +216,3 @@ def hidden_history(text, telegram_id):
                 if j['id'] == x['user']:
                     data = {'text': text, 'user': j['id']}
                     requests.post(url=url3, json=data)
-
-
-def id_detector(telegram_id):
-    url2 = f"{BASE_URL}/account/"
-    response2 = requests.get(url=url2).text
-    dat2 = json.loads(response2)
-    for x in dat2:
-        if x['telegram_id'] == telegram_id:
-            return x['user']
-
-
-def used_adder(telegram_id):
-    url = f"{BASE_URL}/user/"
-    url2 = f"{BASE_URL}/account/"
-    response = requests.get(url=url).text
-    response2 = requests.get(url=url2).text
-    dat = json.loads(response)
-    dat2 = json.loads(response2)
-    for x in dat2:
-        if x['telegram_id'] == telegram_id:
-            for i in dat:
-                if i['id'] == x['user']:
-                    use = i['used']
-                    requests.patch(url=f"{BASE_URL}/user/{str(x['id'])}/", data={'used': int(use) + 1})

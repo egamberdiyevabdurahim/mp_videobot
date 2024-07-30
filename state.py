@@ -42,4 +42,16 @@ class TranslateState(StatesGroup):
 
 class PDFHistoryState(StatesGroup):
     first = State()
-    second = State()
+
+
+class CommandState(StatesGroup):
+    first = State()
+
+
+class BackgroundEraserState(StatesGroup):
+    name = State()
+    img = State()
+
+
+class BackgroundHistoryState(StatesGroup):
+    first = State()
