@@ -14,9 +14,10 @@ def find_post(code):
     dat = json.loads(response)
     for x in dat:
         if x['code'] == code:
+            print("Aaaa")
             url2 = f"{BASE_URL}/category/"
-            response = requests.get(url=url2).text
-            dat2 = json.loads(response)
+            response2 = requests.get(url=url2).text
+            dat2 = json.loads(response2)
             lis = [li['name'] for li in dat2 if x['category'] == li['id']]
             dat = {
                 'id': x['id'],
@@ -33,6 +34,9 @@ def find_post(code):
             }
             return dat
 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# USER
 
 def create_simple_user(telegram_id, first_name=None, last_name=None, password=None, username=None):
     url = f"{BASE_URL}/user/"
@@ -68,9 +72,6 @@ def create_simple_user(telegram_id, first_name=None, last_name=None, password=No
         })
 
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-# USER
-
 def check_user(telegram_id):
     url = f"{BASE_URL}/user/"
     url2 = f"{BASE_URL}/account/"
@@ -88,7 +89,8 @@ def check_user(telegram_id):
         for i in dat:
             if i['id'] == d['id']:
                 use = i['used']
-                requests.patch(url=f"{BASE_URL}/user/{str(d['id'])}/", data={'used': int(use) + 1})
+                idd = x['user']
+                requests.patch(url=f"{BASE_URL}/user/{idd}/", data={'used': int(use) + 1})
                 return True
 
 
@@ -118,15 +120,16 @@ def sign_in(telegram_id, password, username):
                 if j['telegram_id'] == telegram_id:
                     message = True
                     use = d['used']
-                    requests.patch(url=f"{BASE_URL}/user/{str(d['id'])}/", data={'used': int(use) + 1})
+                    idd = x['user']
+                    requests.patch(url=f"{BASE_URL}/user/{idd}/", data={'used': int(use) + 1})
         if message is False:
             requests.post(url=url2, data={
                 'user': d['id'],
                 'telegram_id': telegram_id,
             })
             use = d['used']
-            requests.patch(url=f"{BASE_URL}/user/{str(d['id'])}/", data={'used': int(use) + 1})
-
+            idd = x['user']
+            requests.patch(url=f"{BASE_URL}/user/{idd}/", data={'used': int(use) + 1})
 
 def id_detector(telegram_id):
     url2 = f"{BASE_URL}/account/"
@@ -149,14 +152,14 @@ def used_adder(telegram_id):
             for i in dat:
                 if i['id'] == x['user']:
                     use = i['used']
-                    requests.patch(url=f"{BASE_URL}/user/{str(x['id'])}/", data={'used': int(use) + 1})
+                    idd = x['user']
+                    requests.patch(url=f"{BASE_URL}/user/{idd}/", data={'used': int(use) + 1})
 
 
 def full_id():
     url = f"{BASE_URL}/account/"
     response = requests.get(url=url).text
     dat = json.loads(response)
-    print(dat)
     lis = [li['telegram_id'] for li in dat]
     return lis
 
@@ -173,7 +176,8 @@ def about(text):
             for i in dat:
                 if i['id'] == x['user']:
                     use = i['used']
-                    requests.patch(url=f"{BASE_URL}/user/{str(x['id'])}/", data={'used': int(use) + 1})
+                    idd = x['user']
+                    requests.patch(url=f"{BASE_URL}/user/{idd}/", data={'used': int(use) + 1})
                     data = {
                         'first_name': i['first_name'],
                         'last_name': i['last_name'],
